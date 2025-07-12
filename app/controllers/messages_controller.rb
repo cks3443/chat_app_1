@@ -4,15 +4,16 @@ class MessagesController < ApplicationController
   def create
     @conversation = Conversation.find(params[:conversation_id])
     # TODO
-    @message = @conversation.messages.new(message_params)
+    @message = @conversation.messages.build(message_params)
     @message.user = current_user
 
     if @message.save
-      redirect_to conversation_path(@conversation)
+      ActionCable.server.broadcast("conversation_#{@conversation.id}", message: render_to_string(partial: "messages/message", locals: { message: @message }))
     else
-      flash[:alert] = "메시지를 보낼 수 없습니다."
-      redirect_to conversation_path(@conversation)
+      flash[:alert] = "메시지를 전송에 실패했습니다."
     end
+
+    head :no_content
   end
 
   private
