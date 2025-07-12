@@ -1,6 +1,22 @@
-<h1>모든 회원</h1>
-<ul>
-  <% @users.each do |user| %>
-  <li><%= link_to user.email, user_path(user) %></li>
-  <% end %>
-</ul>
+<div class="container mx-auto my-8 px-4">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">모든 회원</h1>
+    <div>
+      <%= link_to "홈으로", root_path, class: "bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded mr-2" %>
+      <%= button_to "로그아웃", destroy_user_session_path, method: :delete, class: "bg-red-100 hover:bg-red-200 text-red-800 py-2 px-4 rounded" %>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg shadow overflow-hidden">
+    <ul class="divide-y divide-gray-200">
+      <% @users.each do |user| %>
+        <% if user != current_user %>
+          <li class="p-4 hover:bg-gray-50 flex justify-between items-center">
+            <span class="font-medium"><%= user.email %></span>
+            <%= link_to "대화하기", conversations_path(user_id: user.id), data: { turbo_method: :post }, class: "bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm" %>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+</div>

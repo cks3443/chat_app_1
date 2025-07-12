@@ -1,4 +1,35 @@
-<div>
-  <h1 class="font-bold text-4xl">Conversations#show</h1>
-  <p>Find me in app/views/conversations/show.html.erb</p>
+<div class="container mx-auto my-8 px-4" data-conversation-id="<%= @conversation.id %>">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">
+      <%= @conversation.user1 == current_user ? @conversation.user2.email : @conversation.user1.email %>님과의 대화
+    </h1>
+    <%= link_to "모든 대화", conversations_path, class: "bg-gray-100 hover:bg-gray-200 text-gray-800 py-2 px-4 rounded" %>
+  </div>
+
+  <div id="messages" class="bg-white rounded-lg shadow overflow-hidden mb-6 h-96 overflow-y-auto p-4">
+    <% if @messages.any? %>
+      <% @messages.each do |message| %>
+        <%= render partial: "messages/message", locals: { message: message } %>
+      <% end %>
+    <% else %>
+      <p class="text-gray-500 text-center py-4">아직 메시지가 없습니다. 첫 메시지를 보내보세요!</p>
+    <% end %>
+  </div>
+
+  <%= form_with(model: [@conversation, @message], remote: true, class: "bg-white rounded-lg shadow p-4", data: { controller: "reset-form", action: "turbo:submit-end->reset-form#reset" }) do |f| %>
+    <div class="flex">
+      <%= f.text_field :content, placeholder: "메시지를 입력하세요...", class: "flex-grow border rounded-l-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      <%= f.submit "전송", class: "bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-r-lg" %>
+    </div>
+  <% end %>
 </div>
+
+<script>
+  // 페이지 로드 시 메시지 컨테이너를 스크롤하여 가장 최근 메시지가 보이도록 함
+  document.addEventListener('DOMContentLoaded', function() {
+    const messagesContainer = document.getElementById('messages');
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  });
+</script>

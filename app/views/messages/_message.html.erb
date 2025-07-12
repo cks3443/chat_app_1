@@ -1,0 +1,11 @@
+<div class="message-container <%= message.user == current_user ? 'text-right' : 'text-left' %> mb-4">
+  <div class="inline-block max-w-3/4">
+    <div class="text-xs text-gray-500 mb-1">
+      <span class="font-medium"><%= message.user.email %></span> • 
+      <span><%= message.created_at.strftime("%Y-%m-%d %H:%M") %></span>
+    </div>
+    <div class="<%= message.user == current_user ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800' %> rounded-lg py-2 px-4 inline-block">
+      <%= message.content %>
+    </div>
+  </div>
+</div>
